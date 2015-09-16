@@ -7,9 +7,9 @@
 
 void buzzer_on(int gpio, int on_time)
 {
-    digitalWrite (gpio, 1);
-    delay(on_time);
     digitalWrite (gpio, 0);
+    delay(on_time);
+    digitalWrite (gpio, 1);
 }
 
 int main (void)
@@ -22,7 +22,10 @@ int main (void)
     wiringPiSetup();
 
     // use GPIO5
-    pinMode(i, BUZZER_GPIO_NUM);
+    pinMode(BUZZER_GPIO_NUM, OUTPUT);
+
+    // test buzzer
+    buzzer_on(BUZZER_GPIO_NUM, 1000);
 
     for (;;) {
 
