@@ -17,4 +17,13 @@
 $ gcc -o gpio rpi_gpio.c -lwiringPi
 ```
 
+## 运行
+
+> 必须以管理员账号运行
+
+```bash
+$ sudo ./gpio
+```
+
+
 
