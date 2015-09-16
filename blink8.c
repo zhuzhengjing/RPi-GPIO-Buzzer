@@ -25,33 +25,51 @@
 
 #include <stdio.h>
 #include <wiringPi.h>
+#include <time.h>
+
+#define BUZZER_GPIO_NUM     5
+
+void buzzer_on(int gpio, int on_time)
+{
+    digitalWrite (led, 1);
+    delay(on_time);
+    digitalWrite (led, 0);
+}
 
 int main (void)
 {
-  int i, led ;
+    int i, led;
+    time_t now;
 
-  printf ("Raspberry Pi - 8-LED Sequencer\n") ;
-  printf ("==============================\n") ;
-  printf ("\n") ;
-  printf ("Connect LEDs to the first 8 GPIO pins and watch ...\n") ;
+    printf ("RPi GPIO Buzzer\n");
 
-  wiringPiSetup () ;
+    wiringPiSetup();
 
-  for (i = 0 ; i < 8 ; ++i)
-    pinMode (i, OUTPUT) ;
+    // use GPIO5
+    pinMode(i, BUZZER_GPIO_NUM);
 
-  for (;;)
-  {
-    for (led = 0 ; led < 8 ; ++led)
-    {
-      digitalWrite (led, 1) ;
-      delay (100) ;
+    for (;;) {
+        time(&now);
+
+        struct tm *current_time = gmtime(&now);
+        printf("time h = %d, m = %d, s = %d\n",
+               current_time->tm_hour,
+               current_time->tm_min,
+               current_time->tm_sec);
+
+        // 6:00 - 22:00
+        if (current_time->tm_hour >= 6 && current_time->tm_hour <= 22) {
+            if (current_time->tm_min == 0 &&
+                current_time->tm_sec == 0) {            // 整点报时
+                buzzer_on(BUZZER_GPIO_NUM, 1000);
+            } else if (current_time->tm_min == 30 &&
+                       current_time->tm_sec == 0) {     // 半点报时
+                buzzer_on(BUZZER_GPIO_NUM, 100);
+                delay(500);
+            }
+        }
+
+        delay(500);
     }
-
-    for (led = 0 ; led < 8 ; ++led)
-    {
-      digitalWrite (led, 0) ;
-      delay (100) ;
-    }
-  }
 }
+
