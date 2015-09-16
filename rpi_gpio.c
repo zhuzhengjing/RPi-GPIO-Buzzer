@@ -31,9 +31,9 @@
 
 void buzzer_on(int gpio, int on_time)
 {
-    digitalWrite (led, 1);
+    digitalWrite (gpio, 1);
     delay(on_time);
-    digitalWrite (led, 0);
+    digitalWrite (gpio, 0);
 }
 
 int main (void)
