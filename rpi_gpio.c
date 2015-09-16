@@ -2,13 +2,15 @@
 #include <stdio.h>
 #include <wiringPi.h>
 #include <time.h>
+#include <unistd.h>
+
 
 #define BUZZER_GPIO_NUM     5
 
 void buzzer_on(int gpio, int on_time)
 {
     digitalWrite (gpio, 0);
-    delay(on_time);
+    usleep(on_time*1000);
     digitalWrite (gpio, 1);
 }
 
@@ -30,7 +32,8 @@ int main (void)
     for (;;) {
 
         time(&now);
-        struct tm *current_time = gmtime(&now);
+        struct tm *current_time = localtime(&now);
+        //printf("%d:%d:%d\n", current_time->tm_hour, current_time->tm_min, current_time->tm_sec);
 
         // 6:00 - 22:00
         if (current_time->tm_hour >= 6 && current_time->tm_hour <= 22) {
@@ -40,11 +43,11 @@ int main (void)
             } else if (current_time->tm_min == 30 &&
                        current_time->tm_sec == 0) {     // 半点报时
                 buzzer_on(BUZZER_GPIO_NUM, 100);
-                delay(500);
+                usleep(500*1000);
             }
         }
 
-        delay(500);
+        usleep(500*1000);
     }
 }
 
